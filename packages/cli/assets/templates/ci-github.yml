@@ -5,8 +5,11 @@ on:
   pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: '0 3 1 * *' # monthly audit (playbook S3 Stage 4) — drift is fractal; keep looking
 jobs:
   check:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,3 +18,19 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npx asdlc check
+  audit:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npx asdlc audit
+      - uses: actions/upload-artifact@v4
+        with:
+          name: asdlc-audit-report
+          path: .asdlc/reports/
+      # The report is evidence for human review. Applying any of its proposals
+      # (baseline accept, waiver renewals) remains a GOVERN operation.
