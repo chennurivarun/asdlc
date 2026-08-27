@@ -1,0 +1,18 @@
+# Every suppression lives here — inline ignores without a matching waiver fail the
+# registry gate. Agents DRAFT waivers with all fields; a human approves; the agent
+# records the pointer. Expiry ends suppression: the finding turns red until renewed
+# (GOVERN) or fixed.
+#
+# waivers:
+#   - id: W-0001
+#     gate: duplication            # duplication | boundaries | patterns | registry | contracts
+#     scope: src/example/file.ts
+#     fingerprint: "<16-hex fingerprint of the exact finding, from asdlc check output>"
+#     reason: "<why the policy is wrong here>"
+#     approved_by: "<human>"
+#     approval_ref: "<message/PR/decision note pointer>"
+#     approved_on: 2026-01-01
+#     expires_on: 2026-04-01       # permanence requires explicit justification
+#     compensating_control: "<what protects meanwhile>"
+#     retirement_condition: "<what ends this waiver>"
+waivers: []

@@ -1,0 +1,16 @@
+# GOVERNED RATCHET — see playbook S3.4 rule lifecycle; agents draft, humans activate.
+# New rules on an existing repo always start advisory: draft → impact scan →
+# baseline approved existing matches → then block new matches only.
+#
+# This file ships DISABLED (note the .disabled suffix on install). To activate:
+# 1. Write the rule for a divergence class your audit actually found.
+# 2. Add one must-match and one must-not-match fixture beside it.
+# 3. Run the impact scan (asdlc audit), review matches with a human.
+# 4. Rename to .yml — from then on it gates new matches.
+rules:
+  - id: example-raw-error-to-client
+    languages: [ts]
+    severity: WARNING
+    message: Raw provider error returned to client — route it through the shared error mapper.
+    patterns:
+      - pattern: NextResponse.json({ error: $ERR.message }, ...)

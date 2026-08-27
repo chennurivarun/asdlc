@@ -1,0 +1,29 @@
+{
+  "name": "asdlc",
+  "version": "0.1.0",
+  "description": "ASDLC — the anti-drift governance layer for AI-built codebases. Implements the Anti-Drift Playbook v3.1.1 protocol: plan, init, check, audit.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": { "asdlc": "./bin/asdlc.js" },
+  "files": ["dist", "bin", "assets"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "dependency-cruiser": "^16.10.0",
+    "jscpd": "^4.0.5",
+    "picocolors": "^1.1.1",
+    "yaml": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  }
+}

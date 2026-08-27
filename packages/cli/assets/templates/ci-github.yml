@@ -1,0 +1,17 @@
+name: asdlc
+# CI is the real wall — pre-commit hooks are skippable with --no-verify (playbook S1.4).
+# Never modify this workflow to make a failing check pass; that is a GOVERN operation.
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npx asdlc check
