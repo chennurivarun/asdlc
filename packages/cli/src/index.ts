@@ -4,6 +4,7 @@ import { initCommand } from './commands/init.js';
 import { checkCommand } from './commands/check.js';
 import { auditCommand } from './commands/audit.js';
 import { baselineAcceptCommand } from './commands/baseline.js';
+import { waiverDraftCommand } from './commands/waiver.js';
 
 const program = new Command();
 
@@ -37,5 +38,15 @@ baseline.command('accept')
   .option('--approved-by <human>', 'the approving human')
   .option('--approval-ref <ref>', 'pointer to where approval was given (message/PR/decision note)')
   .action((opts) => baselineAcceptCommand(process.cwd(), opts));
+
+const waiver = program.command('waiver').description('Waiver protocol: agents draft, humans approve.');
+waiver.command('draft')
+  .description('Draft a waiver for a finding. It stays inactive (and flagged) until a human fills the approval fields.')
+  .option('--fingerprint <fp>', 'the 16-hex fingerprint from check output')
+  .option('--gate <gate>', 'duplication | boundaries | patterns | registry | contracts')
+  .option('--scope <path>', 'file or area the finding is in')
+  .option('--reason <text>', 'why the policy is wrong here')
+  .option('--expires-in-days <n>', 'days until expiry (default 90)')
+  .action((opts) => waiverDraftCommand(process.cwd(), opts));
 
 program.parseAsync(process.argv);

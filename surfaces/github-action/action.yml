@@ -1,0 +1,21 @@
+name: 'ASDLC Check'
+description: 'Anti-drift governance gate for AI-built codebases — runs asdlc check and fails the job on new drift. A crashed check reports ERROR, never PASS.'
+branding:
+  icon: 'shield'
+  color: 'purple'
+inputs:
+  working-directory:
+    description: 'Directory containing the .asdlc/ install'
+    required: false
+    default: '.'
+  version:
+    description: 'asdlc version to run (npm dist-tag or semver)'
+    required: false
+    default: 'latest'
+runs:
+  using: 'composite'
+  steps:
+    - name: Run asdlc check
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npx --yes asdlc@${{ inputs.version }} check

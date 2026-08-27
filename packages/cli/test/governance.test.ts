@@ -133,6 +133,23 @@ describe('crash honesty', () => {
   });
 });
 
+describe('waiver draft protocol', () => {
+  it('a drafted waiver is malformed (inactive) until a human fills the approval fields', async () => {
+    const { waiverDraftCommand } = await import('../src/commands/waiver.js');
+    const root = tempRepo();
+    writeFileSync(join(root, '.asdlc/waivers.yml'), 'waivers: []\n');
+    waiverDraftCommand(root, {
+      fingerprint: 'abcdef0123456789', gate: 'duplication',
+      scope: 'src/a.ts', reason: 'intentional platform fork',
+    });
+    const check = loadWaivers(root);
+    expect(check.valid).toHaveLength(0);       // not suppressing anything
+    expect(check.malformed).toHaveLength(1);   // flagged red until approved
+    expect(check.malformed[0].missing).toEqual(
+      expect.arrayContaining(['approved_by', 'approval_ref', 'approved_on']));
+  });
+});
+
 describe('install lifecycle', () => {
   it('missing state is null; a partial state file degrades to PARTIAL, never ACTIVE', () => {
     const root = tempRepo();
