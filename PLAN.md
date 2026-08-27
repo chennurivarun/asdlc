@@ -95,12 +95,10 @@ runs `asdlc check` on completion and rejects red; registry is injected into
 context pre-task; waiver drafts halt for the human. First harness that can't
 ship drift.
 
-- [ ] Evaluate fork candidates (30-min clone-and-read each):
-      1. `lessweb/deepcode-cli` (Deep Code CLI — Node, DeepSeek-V4-native)
-      2. `fenwii/deepseek-cli`
-      Fallback: Pi (MIT, built-to-fork) + our own DeepSeek client.
-      Checklist per candidate: (a) MIT/Apache license, (b) clean hook on the
-      task-completion path, (c) real tool-calling loop (files/shell/search).
+- [x] Evaluate fork candidates → **deepcode-cli selected** (MIT, real tool
+      executor + skill system, Node/TS = in-process middleware). deepseek-cli
+      rejected (thin wrapper). Full notes: docs/ZAYA_EVALUATION.md.
+      npm: `asdlc` free; `zaya` taken → zaya-cli / scope / negotiate.
 - [ ] Governance middleware (~500 lines): pre-task registry injection,
       completion gate via in-process asdlc gate runner, waiver-halt.
 - [ ] Model pluggable (DeepSeek default, any OpenAI-compatible endpoint) —
