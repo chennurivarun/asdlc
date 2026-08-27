@@ -47,6 +47,7 @@ export function initCommand(root: string, opts: { mode?: Mode }): void {
     ['BUSINESS_RULES.md', 'docs/BUSINESS_RULES.md'],
     ['ARCHITECTURE.md', 'docs/ARCHITECTURE.md'],
     ['semgrep-example.yml', '.asdlc/semgrep/example.yml.disabled'],
+    ['dependency-cruiser.starter.cjs', '.dependency-cruiser.cjs'],
   ] as const) {
     track(dest, writeIfAbsent(join(root, dest), readFileSync(join(ASSETS, 'templates', asset), 'utf8')));
   }
