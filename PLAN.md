@@ -87,6 +87,30 @@ Scope limit v0.1: JS/TS stacks. Other stacks = documented adapter interface, con
 - [ ] README led by the case study; honest-limits section kept prominent
 - [ ] Flip public + npm publish + launch posts
 
+## Phase 5 — Zaya (the governed harness)
+
+Our own coding-agent harness, DeepSeek-powered, with ASDLC enforced by the
+harness itself — not by prompts. "Done" is a machine-verified state: the loop
+runs `asdlc check` on completion and rejects red; registry is injected into
+context pre-task; waiver drafts halt for the human. First harness that can't
+ship drift.
+
+- [ ] Evaluate fork candidates (30-min clone-and-read each):
+      1. `lessweb/deepcode-cli` (Deep Code CLI — Node, DeepSeek-V4-native)
+      2. `fenwii/deepseek-cli`
+      Fallback: Pi (MIT, built-to-fork) + our own DeepSeek client.
+      Checklist per candidate: (a) MIT/Apache license, (b) clean hook on the
+      task-completion path, (c) real tool-calling loop (files/shell/search).
+- [ ] Governance middleware (~500 lines): pre-task registry injection,
+      completion gate via in-process asdlc gate runner, waiver-halt.
+- [ ] Model pluggable (DeepSeek default, any OpenAI-compatible endpoint) —
+      the harness is the identity, not the model.
+- [ ] Name check: "Zaya" trademark/collision review before anything public.
+- [ ] Positioning: ASDLC = the standard (harness-agnostic); Zaya = the
+      reference harness where it's native.
+
+Gate: starts only after Phase 3 (portal dogfood) and Phase 4 (launch) are done.
+
 ---
 
 ## Roles
