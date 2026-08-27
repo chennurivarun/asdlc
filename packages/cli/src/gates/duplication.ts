@@ -1,9 +1,9 @@
 import { spawnSync } from 'node:child_process';
 import { readFileSync, mkdtempSync, existsSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname, basename } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
-import { makeFinding } from '../fingerprint.js';
+import { makeFinding, contentHash, occurrence } from '../fingerprint.js';
 import type { Config, Finding } from '../types.js';
 
 interface JscpdDuplicate {
@@ -11,20 +11,27 @@ interface JscpdDuplicate {
   secondFile: { name: string };
   lines: number;
   tokens: number;
+  fragment?: string;
+}
+
+// jscpd's exports map blocks package.json resolution and its ESM entry is
+// broken on Node >= 22, so locate the package root by walking up from the
+// resolved entry (path-separator agnostic) and drive the stable CLI binary.
+function resolveJscpdBin(): string {
+  const require = createRequire(import.meta.url);
+  let dir = dirname(require.resolve('jscpd'));
+  while (basename(dir) !== 'jscpd' && dirname(dir) !== dir) dir = dirname(dir);
+  const bin = join(dir, 'bin', 'jscpd');
+  if (basename(dir) !== 'jscpd' || !existsSync(bin)) {
+    throw new Error(`jscpd binary not found (searched from ${dir})`);
+  }
+  return bin;
 }
 
 // G1 — clone detection via jscpd (open-source, wrapped not rewritten).
 // Returns findings or throws; the caller maps a throw to ERROR, never PASS.
 export function runDuplicationGate(root: string, config: Config): Finding[] {
-  // jscpd's exports map blocks package.json resolution and its ESM entry is
-  // broken on Node >= 22, so resolve the package root from its main entry and
-  // drive the stable CLI binary instead.
-  const require = createRequire(import.meta.url);
-  const entry = require.resolve('jscpd');
-  const pkgRoot = entry.slice(0, entry.lastIndexOf(`${'node_modules'}/jscpd/`) + 'node_modules/jscpd'.length + 1);
-  const bin = join(pkgRoot, 'bin', 'jscpd');
-  if (!existsSync(bin)) throw new Error(`jscpd binary not found at ${bin}`);
-
+  const bin = resolveJscpdBin();
   const out = mkdtempSync(join(tmpdir(), 'asdlc-jscpd-'));
   try {
     const args = [
@@ -42,10 +49,15 @@ export function runDuplicationGate(root: string, config: Config): Finding[] {
       throw new Error(`jscpd produced no report (exit ${res.status}): ${res.stderr?.slice(0, 400)}`);
     }
     const report = JSON.parse(readFileSync(reportPath, 'utf8')) as { duplicates?: JscpdDuplicate[] };
+    // Distinct clone groups between the same file pair must not share a
+    // fingerprint (a new clone would pass as baselined): identity includes a
+    // hash of the cloned fragment, with deterministic #n suffixes as backstop.
+    const counts = new Map<string, number>();
     return (report.duplicates ?? []).map((d) => {
       const [a, b] = [d.firstFile.name, d.secondFile.name].sort();
+      const frag = contentHash(d.fragment ?? `${d.lines}:${d.tokens}`);
       return makeFinding(
-        'duplication', 'clone', a, b,
+        'duplication', 'clone', a, occurrence(counts, `${b}@${frag}`),
         `${d.lines}-line clone shared with ${b}`,
       );
     });

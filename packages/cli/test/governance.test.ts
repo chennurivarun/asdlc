@@ -6,7 +6,8 @@ import { describe, it, expect } from 'vitest';
 import { mkdtempSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { fingerprint, makeFinding } from '../src/fingerprint.js';
+import { fingerprint, makeFinding, contentHash, occurrence } from '../src/fingerprint.js';
+import { tokenizeCommand } from '../src/gates/contracts.js';
 import { evaluateGate } from '../src/baseline.js';
 import { loadWaivers, activeWaiverFingerprints } from '../src/waivers.js';
 import { runAllGates, overallExitCode } from '../src/runner.js';
@@ -27,6 +28,29 @@ describe('fingerprint stability', () => {
   it('differs when the finding actually differs', () => {
     expect(fingerprint('duplication', 'clone', 'src/a.ts', 'src/b.ts'))
       .not.toBe(fingerprint('duplication', 'clone', 'src/a.ts', 'src/c.ts'));
+  });
+  it('content hash ignores whitespace/moves but changes with content', () => {
+    expect(contentHash('const a = 1;\n  const b = 2;')).toBe(contentHash('const a = 1; const b = 2;'));
+    expect(contentHash('const a = 1;')).not.toBe(contentHash('const a = 2;'));
+  });
+  it('identical matches get deterministic distinct symbols — a NEW duplicate cannot hide behind a baselined one', () => {
+    const counts = new Map<string, number>();
+    const s1 = occurrence(counts, 'abc');
+    const s2 = occurrence(counts, 'abc');
+    const s3 = occurrence(counts, 'abc');
+    expect(new Set([s1, s2, s3]).size).toBe(3);
+    // Deterministic across runs: same sequence yields same symbols.
+    const counts2 = new Map<string, number>();
+    expect([occurrence(counts2, 'abc'), occurrence(counts2, 'abc')]).toEqual([s1, s2]);
+  });
+});
+
+describe('contracts command tokenization (no shell)', () => {
+  it('splits words and preserves quoted args, without shell metacharacter power', () => {
+    expect(tokenizeCommand('npm test -- tests/contracts')).toEqual(['npm', 'test', '--', 'tests/contracts']);
+    expect(tokenizeCommand('vitest run "my dir/contracts"')).toEqual(['vitest', 'run', 'my dir/contracts']);
+    // `;` survives only as a literal argument, never as a command separator.
+    expect(tokenizeCommand('echo hi; rm -rf /')).toEqual(['echo', 'hi;', 'rm', '-rf', '/']);
   });
 });
 
