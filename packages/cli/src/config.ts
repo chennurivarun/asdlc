@@ -4,10 +4,15 @@ import { parse } from 'yaml';
 import { ASDLC_DIR } from './state.js';
 import type { Config, GateId } from './types.js';
 
+// Playbook S1.3 default excludes: node_modules, dist/build, tests, migrations,
+// generated, vendor, lockfiles. Tests are excluded from clone detection —
+// test boilerplate similarity is not business-rule drift.
 export const DEFAULT_EXCLUDES = [
   '**/node_modules/**', '**/dist/**', '**/build/**', '**/.next/**',
   '**/coverage/**', '**/vendor/**', '**/*.min.*', '**/generated/**',
   '**/migrations/**', '**/*.lock', '**/package-lock.json', '**/.asdlc/**',
+  '**/*.test.*', '**/*.spec.*', '**/__tests__/**', '**/tests/**', '**/test/**',
+  '**/*.stories.*', '**/__mocks__/**', '**/fixtures/**',
 ];
 
 export function defaultConfig(): Config {
