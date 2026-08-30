@@ -62,6 +62,14 @@ evidence, not completeness. The registry of human-authored definitions is the
 load-bearing part. Contract tests can encode a wrong definition — domain review
 still matters.
 
+## Project
+
+- [Roadmap](ROADMAP.md) — shipped, next, and the Zaya horizon
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md) — three rules, the first is verdict integrity
+- [Wiki](../../wiki) — getting started, how the gates work, FAQ
+- [Case study](case-study/CASE_STUDY.md) — the seven-bug arc with numbers
+
 ## Repo layout
 
 - `spec/` — the frozen protocol + [ASDLC overview](spec/ASDLC_OVERVIEW.md)
