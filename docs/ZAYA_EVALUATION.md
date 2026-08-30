@@ -16,6 +16,8 @@ path, (c) real tool-calling loop.
 - (b) Completion hook: `session.ts` is the seam — turn-end is where
   `asdlc check` gates "done". Detailed wiring is Phase 5 build work.
 - DeepSeek-native: prompt/tool tuning for DeepSeek models already done upstream.
+- Health check (2026-08-31): MIT confirmed via API, 2,224 stars, pushed within
+  the last 2 days, 132 open issues — actively maintained, viable fork base.
 
 ## Candidate 2 — `fenwii/deepseek-cli` → rejected
 

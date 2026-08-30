@@ -51,6 +51,15 @@ cross-reviewed by a rival model (which found 3 real verdict-integrity bugs
 before release), and the tool's own validation caught a spec-conformance bug
 in itself. Full pilot numbers are in the case study in the repo.
 
+This isn't just my app. Industry data says the disease is general: GitClear
+tracked an ~8x increase in duplicated code blocks after AI adoption went
+mainstream; LinearB's 2026 benchmarks (8.1M pull requests, 4,800 teams) found
+AI-generated code carries ~1.7x more issues per PR and technical debt rising
+30–41% after AI tool adoption; and a 302,000-commit empirical study
+("Debt Behind the AI Boom", arXiv) counted surviving unresolved issues
+climbing past 110,000 by early 2026. Duplication is AI's default gait at
+industry scale.
+
 Honest limits, because this space is drowning in overclaims: gates prove the
 absence of known, expressible violation classes — not correctness, and not all
 drift. Clone detection sees textual similarity, not semantic equivalence. The
