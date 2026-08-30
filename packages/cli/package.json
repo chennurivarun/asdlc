@@ -4,6 +4,10 @@
   "description": "ASDLC — the anti-drift governance layer for AI-built codebases. Implements the Anti-Drift Playbook v3.1.1 protocol: plan, init, check, audit.",
   "license": "Apache-2.0",
   "type": "module",
+  "repository": { "type": "git", "url": "git+https://github.com/chennurivarun/asdlc.git", "directory": "packages/cli" },
+  "homepage": "https://github.com/chennurivarun/asdlc#readme",
+  "bugs": { "url": "https://github.com/chennurivarun/asdlc/issues" },
+  "keywords": ["ai", "coding-agents", "code-quality", "governance", "drift", "duplication", "architecture", "ci", "claude-code", "cursor", "sdlc"],
   "bin": { "asdlc": "./bin/asdlc.js" },
   "files": ["dist", "bin", "assets"],
   "scripts": {
