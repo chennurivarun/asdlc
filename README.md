@@ -15,7 +15,8 @@ ASDLC is a CLI + protocol that makes drift governable:
   architecture boundaries, pattern rules, registry/waiver validation, contract
   tests) with one exit code. A crashed check reports **ERROR, never PASS**.
 - **Detection bounds what prevention misses** — `asdlc audit` re-diagnoses the
-  whole repo on a schedule, because drift is fractal: even cures drift.
+  whole repo on a schedule, because drift is fractal: even cures drift. Each
+  audit emits a **drift score** (A–F badge, see [docs/DRIFT_SCORE.md](docs/DRIFT_SCORE.md)).
 
 It wraps proven open-source scanners (jscpd, dependency-cruiser, Semgrep) rather
 than reinventing them, and implements the frozen

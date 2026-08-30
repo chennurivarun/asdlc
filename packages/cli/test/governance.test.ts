@@ -150,6 +150,47 @@ describe('waiver draft protocol', () => {
   });
 });
 
+describe('drift score', () => {
+  const emptyWaivers = { valid: [], expired: [], malformed: [] };
+  const gate = (over: Partial<import('../src/types.js').GateResult>): import('../src/types.js').GateResult => ({
+    gate: 'duplication', status: 'PASS', findings: [], newFindings: [], baselined: 0, waived: 0, ...over,
+  });
+  const fiveGates = (over?: Partial<import('../src/types.js').GateResult>) => [
+    gate({ gate: 'duplication', ...over }), gate({ gate: 'boundaries' }), gate({ gate: 'patterns' }),
+    gate({ gate: 'registry' }), gate({ gate: 'contracts' }),
+  ];
+
+  it('fully governed green repo scores A', async () => {
+    const { computeDriftScore } = await import('../src/score.js');
+    const s = computeDriftScore(fiveGates(), emptyWaivers, 5);
+    expect(s.score).toBe(100);
+    expect(s.band).toBe('A');
+  });
+  it('no registry costs 30 points — meaning living nowhere is the cardinal gap', async () => {
+    const { computeDriftScore } = await import('../src/score.js');
+    const s = computeDriftScore(fiveGates(), emptyWaivers, 0);
+    expect(s.score).toBe(70);
+    expect(s.band).toBe('C');
+  });
+  it('open findings and dead gates drag the score', async () => {
+    const { computeDriftScore } = await import('../src/score.js');
+    const finding = makeFinding('duplication', 'clone', 'a.ts', 'b.ts', 'x');
+    const results = fiveGates({ status: 'FAIL', newFindings: Array(10).fill(finding) });
+    results[2] = { ...results[2], status: 'ERROR' };
+    results[4] = { ...results[4], status: 'SKIPPED' };
+    const s = computeDriftScore(results, emptyWaivers, 3);
+    // 100 − 25 (10 open) − 10 (coverage 3/5) = 65
+    expect(s.score).toBe(65);
+    expect(s.band).toBe('C');
+    expect(s.components.coverage).toBe(3);
+  });
+  it('badge json is shields-endpoint shaped', async () => {
+    const { computeDriftScore, badgeJson } = await import('../src/score.js');
+    const b = JSON.parse(badgeJson(computeDriftScore(fiveGates(), emptyWaivers, 5)));
+    expect(b).toMatchObject({ schemaVersion: 1, label: 'drift', message: 'A 100', color: 'brightgreen' });
+  });
+});
+
 describe('install lifecycle', () => {
   it('missing state is null; a partial state file degrades to PARTIAL, never ACTIVE', () => {
     const root = tempRepo();

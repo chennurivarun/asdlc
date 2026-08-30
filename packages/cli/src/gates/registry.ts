@@ -10,6 +10,15 @@ import type { Config, Finding } from '../types.js';
 //  - registry file exists and has at least one concept section
 //  - every `backtick/path` reference under a concept resolves in the repo
 //  - waivers are well-formed; expired waivers surface as findings (suppression ended)
+// Concepts with a real definition: `## <name>` sections, excluding templates.
+export function countGovernedConcepts(root: string, config: Config): number {
+  const regPath = join(root, config.registry_path);
+  if (!existsSync(regPath)) return 0;
+  const text = readFileSync(regPath, 'utf8');
+  return (text.match(/^##\s+.+$/gm) ?? [])
+    .filter((h) => !/example/i.test(h)).length;
+}
+
 export function runRegistryGate(root: string, config: Config): Finding[] {
   const findings: Finding[] = [];
   const regPath = join(root, config.registry_path);

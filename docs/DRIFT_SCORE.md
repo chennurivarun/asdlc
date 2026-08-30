@@ -32,6 +32,10 @@ The score measures *governance activity*, not correctness and not the absence
 of semantic drift. A high score means the machinery is running and nothing new
 slipped past it — not that the definitions are right. That remains human work.
 
-Status: v0 — weights are provisional until three or more validated pilots
-exist (see `docs/VALIDATION_LOG.md`). Not yet emitted by the CLI; lands with
-`asdlc audit --score` in v0.2.
+Status: shipped in v0.2 — `asdlc audit` prints the score and writes
+`.asdlc/badge.json` (shields.io endpoint format); `asdlc audit --score`
+prints just `"B 78"` for scripts. Weights remain provisional until three or
+more validated pilots exist (see `docs/VALIDATION_LOG.md`).
+
+Badge usage once `.asdlc/badge.json` is committed:
+`https://img.shields.io/endpoint?url=<raw URL to your .asdlc/badge.json>`

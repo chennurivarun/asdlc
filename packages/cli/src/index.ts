@@ -28,8 +28,9 @@ program.command('check')
   .action((opts) => checkCommand(process.cwd(), opts));
 
 program.command('audit')
-  .description('Read-only diagnosis: full gate sweep, markdown report, PROPOSED baseline.')
-  .action(() => auditCommand(process.cwd()));
+  .description('Read-only diagnosis: full gate sweep, markdown report, drift score + badge, PROPOSED baseline.')
+  .option('--score', 'print only the drift score (e.g. "B 78") and exit')
+  .action((opts) => auditCommand(process.cwd(), opts));
 
 const baseline = program.command('baseline').description('Baseline governance (GOVERN operations).');
 baseline.command('accept')
