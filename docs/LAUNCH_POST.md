@@ -62,9 +62,12 @@ read-only and changes nothing — that's the whole trial cost.
 ---
 
 **Posting checklist (launch day):**
-- [ ] Repo flipped public
-- [ ] `npm publish` done (`asdlc` name confirmed free)
-- [ ] HN Show HN (weekday morning US time works best)
+- [x] Repo flipped public (2026-08-30)
+- [x] `npm publish` done — live as `asdlc-cli@0.1.0` (command stays `asdlc`)
+- [ ] HN Show HN — **DEFERRED**: account under new-account Show HN restriction.
+      Plan: participate genuinely for 2–4 weeks (comment on threads you actually
+      know about — AI coding, code quality), then submit. Never work around the
+      restriction; never coordinate upvotes (both get accounts banned).
 - [ ] dev.to cross-post (longer version, can include the case-study tables)
 - [ ] LinkedIn/X thread (3–5 posts: disease → experiment → numbers → tool → link)
 - [ ] Watch HN comments for the first 3 hours — answering questions early is
