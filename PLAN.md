@@ -10,7 +10,7 @@ complements Spec Kit / BMAD / Kiro / plain Claude Code, competes with none of th
 - Name: **ASDLC** (spec = the ASDLC methodology; CLI = `asdlc`)
 - Form: CLI tool first (Node 22 + TypeScript), other surfaces later
 - Publishing: **private repo until launch-ready**, then Apache-2.0 public launch
-- The insurance portal is a **private test bed only** — never published, never named;
+- The pilot application is a **private test bed only** — never published, never named;
   any case-study material derived from it is anonymized and owner-approved first
 
 ---
@@ -72,7 +72,7 @@ Scope limit v0.1: JS/TS stacks. Other stacks = documented adapter interface, con
 
 ## Phase 3 — Private validation loop
 
-- [ ] Dogfood the CLI on the insurance portal (private): must reproduce/exceed the manual
+- [x] Dogfood the CLI on the private pilot repo: must reproduce/exceed the manual
       2026-08-14 Phase A results. Score against the seven-ticket answer key.
 - [ ] Run on 1–2 unrelated repos (an OSS project) to kill portal-overfitting
 - [ ] Record the §3.4 metrics: misses, false positives, interruptions, time cost
@@ -113,7 +113,7 @@ Gate: starts only after Phase 3 (portal dogfood) and Phase 4 (launch) are done.
 
 ## Roles
 
-- **Varun (owner):** all GOVERN approvals, definitions, name/npm/org choices, launch call
+- **Owner:** all GOVERN approvals, definitions, name/npm/org choices, launch call
 - **Claude (builder/analyst):** implementation, extraction, docs, case-study drafting
 - **Codex (adversarial reviewer):** cross-reviews CLI code before merge — the same
   builder-vs-verifier separation the protocol prescribes
@@ -121,5 +121,5 @@ Gate: starts only after Phase 3 (portal dogfood) and Phase 4 (launch) are done.
 ## Deferred decisions (resolve when reached)
 
 - npm package name availability (`asdlc`) — check at first publish
-- GitHub org (personal vs cyepro-solutions) — decide at first push
+- GitHub org — resolved: personal account (private, pushed 2026-08-30)
 - Case-study detail level — owner approval before anything portal-derived leaves private

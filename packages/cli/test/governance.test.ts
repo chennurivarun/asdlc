@@ -77,7 +77,7 @@ describe('waiver lifecycle', () => {
     scope: src/a.ts
     fingerprint: "${fp}"
     reason: intentional platform fork
-    approved_by: varun
+    approved_by: reviewer
     approval_ref: "PR #1 review"
     approved_on: 2026-01-01
     expires_on: ${expires}

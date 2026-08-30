@@ -22,9 +22,17 @@ than reinventing them, and implements the frozen
 [Anti-Drift Playbook v3.1.1](spec/ANTI_DRIFT_PLAYBOOK_v3.1.1.md) protocol.
 Workflow-agnostic: complements Spec Kit, BMAD, Kiro, Claude Code, Cursor.
 
+## Try it in 60 seconds
+
+```bash
+cd your-repo
+npx asdlc plan    # read-only: changes nothing, tells you what governance would look like here
+```
+
 ## Quickstart
 
 ```bash
+npm install -g asdlc
 cd your-repo
 asdlc plan     # read-only: detects stack, proposes greenfield/legacy mode
 asdlc init     # installs .asdlc/, registry templates, AGENTS.md rules, CI gate

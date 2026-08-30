@@ -1,8 +1,8 @@
 # Case study: curing concept drift in an AI-built production app
 
-> **STATUS: DRAFT — PRIVATE. Not for publication until the owner approves the
-> anonymization.** The subject is referred to only as "a production insurance
-> CRM"; no company, product, ticket-system, or person names appear.
+> Anonymization approved by the owner (2026-08-30). The subject is referred to
+> only as "a production insurance CRM"; no company, product, ticket-system, or
+> person names appear.
 
 ## The situation
 
