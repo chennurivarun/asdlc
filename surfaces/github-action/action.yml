@@ -18,4 +18,4 @@ runs:
     - name: Run asdlc check
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: npx --yes asdlc@${{ inputs.version }} check
+      run: npx --yes asdlc-cli@${{ inputs.version }} check

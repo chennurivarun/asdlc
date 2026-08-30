@@ -26,13 +26,13 @@ Workflow-agnostic: complements Spec Kit, BMAD, Kiro, Claude Code, Cursor.
 
 ```bash
 cd your-repo
-npx asdlc plan    # read-only: changes nothing, tells you what governance would look like here
+npx asdlc-cli plan    # read-only: changes nothing, tells you what governance would look like here
 ```
 
 ## Quickstart
 
 ```bash
-npm install -g asdlc
+npm install -g asdlc-cli   # installs the `asdlc` command
 cd your-repo
 asdlc plan     # read-only: detects stack, proposes greenfield/legacy mode
 asdlc init     # installs .asdlc/, registry templates, AGENTS.md rules, CI gate

@@ -1,5 +1,5 @@
 {
-  "name": "asdlc",
+  "name": "asdlc-cli",
   "version": "0.1.0",
   "description": "ASDLC — the anti-drift governance layer for AI-built codebases. Implements the Anti-Drift Playbook v3.1.1 protocol: plan, init, check, audit.",
   "license": "Apache-2.0",

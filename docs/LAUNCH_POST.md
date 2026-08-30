@@ -56,8 +56,8 @@ absence of known, expressible violation classes — not correctness, and not all
 drift. Clone detection sees textual similarity, not semantic equivalence. The
 human-authored registry is the load-bearing part; the tool is the enforcement.
 
-Repo: https://github.com/chennurivarun/asdlc · `npx asdlc plan` is read-only
-and changes nothing — that's the whole trial cost.
+Repo: https://github.com/chennurivarun/asdlc · `npx asdlc-cli plan` is
+read-only and changes nothing — that's the whole trial cost.
 
 ---
 
