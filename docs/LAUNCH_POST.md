@@ -80,5 +80,8 @@ read-only and changes nothing — that's the whole trial cost.
 - [x] dev.to cross-post — LIVE (2026-08-31)
 - [x] LinkedIn — LIVE (2026-08-31)
 - [-] X thread — skipped by owner decision
+- [x] Console.dev submission — emailed hello@console.dev (2026-08-31);
+      editorial review, no reply guaranteed; pre-1.0 makes the Betas section
+      eligible even if review slots are full
 - [ ] Watch HN comments for the first 3 hours — answering questions early is
       half the launch
