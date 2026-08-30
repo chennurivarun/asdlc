@@ -64,6 +64,7 @@ still matters.
 
 ## Project
 
+- [Vision](VISION.md) — where this is going, and why Zaya comes next
 - [Roadmap](ROADMAP.md) — shipped, next, and the Zaya horizon
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md) — three rules, the first is verdict integrity
