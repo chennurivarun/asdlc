@@ -68,7 +68,8 @@ read-only and changes nothing — that's the whole trial cost.
       Plan: participate genuinely for 2–4 weeks (comment on threads you actually
       know about — AI coding, code quality), then submit. Never work around the
       restriction; never coordinate upvotes (both get accounts banned).
-- [ ] dev.to cross-post (longer version, can include the case-study tables)
-- [ ] LinkedIn/X thread (3–5 posts: disease → experiment → numbers → tool → link)
+- [x] dev.to cross-post — LIVE (2026-08-31)
+- [x] LinkedIn — LIVE (2026-08-31)
+- [-] X thread — skipped by owner decision
 - [ ] Watch HN comments for the first 3 hours — answering questions early is
       half the launch
