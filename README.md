@@ -1,4 +1,4 @@
-# ASDLC
+# ASDLC — Agentic Software Development Lifecycle
 
 **The governance layer for agentic software development.**
 
