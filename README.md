@@ -1,27 +1,39 @@
 # ASDLC
 
-**The anti-drift governance layer for AI-built codebases.**
+**The governance layer for agentic software development.**
 
-AI coding agents are amnesiac contributors: every session writes locally good code
-with no memory of what the last session built. The result is *concept drift* — the
-same business rule implemented five different ways, half-removed fields, tests that
-mirror bugs, features nobody consumes. Bugs that keep reopening.
+AI agents can write code quickly, but they do not inherit the shared understanding
+that keeps a software system coherent. Each session can make a locally reasonable
+change while quietly changing the system's meaning: the same business rule appears
+five different ways, fields are only half removed, tests mirror bugs, and features
+lose their consumers. That is *concept drift* — and it compounds across agents,
+sessions, and releases.
 
-ASDLC is a CLI + protocol that makes drift governable:
+ASDLC gives agentic teams a durable control loop: humans define the meaning that
+must not drift; agents work within it; machines verify every change; audits find
+what prevention missed. It is a CLI + protocol for making AI-assisted development
+governable.
 
-- **Meaning is authored once** — a human-owned registry (`docs/BUSINESS_RULES.md`)
-  defines every governed concept; agents consult it instead of inventing semantics.
-- **Machines guard the door** — `asdlc check` runs five gates (clone detection,
+- **Define what must remain true** — a human-owned registry
+  (`docs/BUSINESS_RULES.md`) records the business concepts, invariants, and
+  boundaries agents must preserve.
+- **Verify every agent change** — `asdlc check` runs five gates (clone detection,
   architecture boundaries, pattern rules, registry/waiver validation, contract
   tests) with one exit code. A crashed check reports **ERROR, never PASS**.
-- **Detection bounds what prevention misses** — `asdlc audit` re-diagnoses the
-  whole repo on a schedule, because drift is fractal: even cures drift. Each
-  audit emits a **drift score** (A–F badge, see [docs/DRIFT_SCORE.md](docs/DRIFT_SCORE.md)).
+- **Continuously measure drift** — `asdlc audit` re-diagnoses the whole repository
+  on a schedule and emits a **drift score** (A–F badge, see
+  [docs/DRIFT_SCORE.md](docs/DRIFT_SCORE.md)).
+
+**Agentic software development needs more than prompts and tests.** Prompts are
+not durable policy; tests do not prove that independently generated changes still
+mean the same thing. ASDLC makes the rules explicit, enforces them in CI, and
+keeps a reviewable record of the human decisions behind exceptions.
 
 It wraps proven open-source scanners (jscpd, dependency-cruiser, Semgrep) rather
 than reinventing them, and implements the frozen
 [Anti-Drift Playbook v3.1.1](spec/ANTI_DRIFT_PLAYBOOK_v3.1.1.md) protocol.
-Workflow-agnostic: complements Spec Kit, BMAD, Kiro, Claude Code, Cursor.
+Workflow- and agent-agnostic: it complements Spec Kit, BMAD, Kiro, Claude Code,
+Cursor, and any coding harness.
 
 ## Try it in 60 seconds
 
