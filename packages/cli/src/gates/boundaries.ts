@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { makeFinding } from '../fingerprint.js';
+import { makeFinding, normalizePath } from '../fingerprint.js';
 import type { Config, Finding } from '../types.js';
 
 // G2 — architecture boundaries via dependency-cruiser's programmatic API.
@@ -25,10 +25,13 @@ export async function runBoundariesGate(root: string, config: Config): Promise<F
     const output = typeof result.output === 'string' ? JSON.parse(result.output) : result.output;
     const violations = (output.summary?.violations ?? []) as
       { rule: { name: string }; from: string; to: string }[];
-    return violations.map((v) =>
-      makeFinding('boundaries', v.rule.name, v.from, v.to,
-        `${v.rule.name}: ${v.from} → ${v.to}`),
-    );
+    // The `to` path is the symbol and participates in the fingerprint —
+    // canonicalize it like every other secondary path (issue #1 class).
+    return violations.map((v) => {
+      const to = normalizePath(v.to);
+      return makeFinding('boundaries', v.rule.name, v.from, to,
+        `${v.rule.name}: ${normalizePath(v.from)} → ${to}`);
+    });
   } finally {
     process.chdir(prevCwd);
   }

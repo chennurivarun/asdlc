@@ -3,10 +3,10 @@ import { readFileSync, mkdtempSync, existsSync, rmSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
-import { makeFinding, contentHash, occurrence } from '../fingerprint.js';
+import { makeFinding, contentHash, occurrence, normalizePath } from '../fingerprint.js';
 import type { Config, Finding } from '../types.js';
 
-interface JscpdDuplicate {
+export interface JscpdDuplicate {
   firstFile: { name: string };
   secondFile: { name: string };
   lines: number;
@@ -26,6 +26,25 @@ function resolveJscpdBin(): string {
     throw new Error(`jscpd binary not found (searched from ${dir})`);
   }
   return bin;
+}
+
+// Maps jscpd duplicates to findings. Both paths are canonicalized BEFORE
+// sorting and before entering the symbol/message: jscpd emits native
+// separators on Windows, both paths participate in the fingerprint, and the
+// same logical clone must fingerprint identically on every OS (issue #1).
+// Distinct clone groups between the same file pair must not share a
+// fingerprint (a new clone would pass as baselined): identity includes a
+// hash of the cloned fragment, with deterministic #n suffixes as backstop.
+export function mapClones(duplicates: JscpdDuplicate[]): Finding[] {
+  const counts = new Map<string, number>();
+  return duplicates.map((d) => {
+    const [a, b] = [d.firstFile.name, d.secondFile.name].map(normalizePath).sort();
+    const frag = contentHash(d.fragment ?? `${d.lines}:${d.tokens}`);
+    return makeFinding(
+      'duplication', 'clone', a, occurrence(counts, `${b}@${frag}`),
+      `${d.lines}-line clone shared with ${b}`,
+    );
+  });
 }
 
 // G1 — clone detection via jscpd (open-source, wrapped not rewritten).
@@ -49,18 +68,7 @@ export function runDuplicationGate(root: string, config: Config): Finding[] {
       throw new Error(`jscpd produced no report (exit ${res.status}): ${res.stderr?.slice(0, 400)}`);
     }
     const report = JSON.parse(readFileSync(reportPath, 'utf8')) as { duplicates?: JscpdDuplicate[] };
-    // Distinct clone groups between the same file pair must not share a
-    // fingerprint (a new clone would pass as baselined): identity includes a
-    // hash of the cloned fragment, with deterministic #n suffixes as backstop.
-    const counts = new Map<string, number>();
-    return (report.duplicates ?? []).map((d) => {
-      const [a, b] = [d.firstFile.name, d.secondFile.name].sort();
-      const frag = contentHash(d.fragment ?? `${d.lines}:${d.tokens}`);
-      return makeFinding(
-        'duplication', 'clone', a, occurrence(counts, `${b}@${frag}`),
-        `${d.lines}-line clone shared with ${b}`,
-      );
-    });
+    return mapClones(report.duplicates ?? []);
   } finally {
     rmSync(out, { recursive: true, force: true });
   }

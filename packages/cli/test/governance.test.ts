@@ -150,6 +150,44 @@ describe('waiver draft protocol', () => {
   });
 });
 
+describe('cross-platform path canonicalization (issue #1)', () => {
+  const dup = (first: string, second: string) => ({
+    firstFile: { name: first }, secondFile: { name: second }, lines: 8, tokens: 80,
+    fragment: '@font-face { font-family: x; }',
+  });
+
+  it('Windows and POSIX jscpd paths produce identical fingerprints', async () => {
+    const { mapClones } = await import('../src/gates/duplication.js');
+    const win = mapClones([dup('packages\\ui\\src\\fonts.css', 'packages\\ui\\src\\fonts.css')]);
+    const posix = mapClones([dup('packages/ui/src/fonts.css', 'packages/ui/src/fonts.css')]);
+    expect(win[0].fingerprint).toBe(posix[0].fingerprint);
+    expect(win[0].path).toBe(posix[0].path);
+  });
+
+  it('rendered findings contain no mixed or native separators', async () => {
+    const { mapClones } = await import('../src/gates/duplication.js');
+    const [f] = mapClones([dup('packages\\ui\\src\\a.css', 'packages\\ui\\src\\b.css')]);
+    expect(f.path).not.toContain('\\');
+    expect(f.symbol).not.toContain('\\');
+    expect(f.message).not.toContain('\\');
+  });
+
+  it('pair ordering is canonical: normalization happens before sorting', async () => {
+    const { mapClones } = await import('../src/gates/duplication.js');
+    const win = mapClones([dup('src\\z.ts', 'src\\a.ts')]);
+    const posix = mapClones([dup('src/a.ts', 'src/z.ts')]);
+    expect(win[0].fingerprint).toBe(posix[0].fingerprint);
+    expect(win[0].path).toBe('src/a.ts');
+  });
+
+  it('legitimate same-file internal clones remain reportable', async () => {
+    const { mapClones } = await import('../src/gates/duplication.js');
+    const findings = mapClones([dup('src\\a.ts', 'src\\a.ts')]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0].path).toBe('src/a.ts');
+  });
+});
+
 describe('drift score', () => {
   const emptyWaivers = { valid: [], expired: [], malformed: [] };
   const gate = (over: Partial<import('../src/types.js').GateResult>): import('../src/types.js').GateResult => ({

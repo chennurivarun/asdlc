@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.1 — 2026-09-02
+
+Fixes [#1](https://github.com/chennurivarun/asdlc/issues/1) — thanks to
+**@Sampath2439** for an exemplary report.
+
+- **Cross-platform fingerprint stability:** on Windows, jscpd emits native
+  `\` paths; the secondary clone path entered the finding symbol (and thus
+  the fingerprint) unnormalized, so the same logical clone fingerprinted
+  differently per OS — breaking baseline portability between Windows
+  developers and Linux CI. Both paths are now canonicalized *before* sorting
+  and before symbol/message construction. Fails-red note: the bug could
+  resurface baselined findings as new; it could never hide a finding.
+- Same-class sweep: the patterns gate now canonicalizes the path inside its
+  hash input, and the boundaries gate canonicalizes the `to` path in its
+  symbol/message.
+- Four regression tests: identical fingerprints for `/` vs `\` inputs,
+  no native separators in rendered findings, canonical pair ordering
+  (normalize-then-sort), and same-file internal clones remain reportable.
+- **Note:** patterns-gate fingerprints change in this release (hash-input
+  canonicalization). Pre-1.0: re-run `audit` before accepting baselines.
+
 ## 0.2.0 — 2026-08-31
 
 - **Drift score**: every `asdlc audit` computes a 100-point score and A–F band
