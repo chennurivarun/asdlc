@@ -21,6 +21,8 @@ export function runPatternsGate(root: string, config: Config): Finding[] | 'UNCO
   const res = spawnSync(
     'semgrep',
     ['scan', '--config', rulesDir, '--json', '--quiet', '--metrics', 'off',
+      // Top-level `exclude` is global across gates (issue #3).
+      ...config.exclude.flatMap((g) => ['--exclude', g]),
       ...config.source_dirs.filter((d) => existsSync(join(root, d)))],
     { cwd: root, encoding: 'utf8', timeout: 600_000, maxBuffer: 64 * 1024 * 1024 },
   );

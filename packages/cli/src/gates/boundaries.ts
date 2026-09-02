@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { makeFinding, normalizePath } from '../fingerprint.js';
+import { globToRegex } from '../config.js';
 import type { Config, Finding } from '../types.js';
 
 // G2 — architecture boundaries via dependency-cruiser's programmatic API.
@@ -21,7 +22,13 @@ export async function runBoundariesGate(root: string, config: Config): Promise<F
   const prevCwd = process.cwd();
   process.chdir(root);
   try {
-    const result = await cruise(dirs, { ruleSet, validate: true, outputType: 'json' });
+    // Top-level `exclude` is global across gates (issue #3); dependency-cruiser
+    // takes regexes, so the config globs are converted. Rule-file excludes
+    // still apply on top — this only adds, never removes, exclusions.
+    const result = await cruise(dirs, {
+      ruleSet, validate: true, outputType: 'json',
+      exclude: { path: config.exclude.map(globToRegex) },
+    });
     const output = typeof result.output === 'string' ? JSON.parse(result.output) : result.output;
     const violations = (output.summary?.violations ?? []) as
       { rule: { name: string }; from: string; to: string }[];

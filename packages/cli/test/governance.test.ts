@@ -229,6 +229,42 @@ describe('drift score', () => {
   });
 });
 
+describe('global exclude semantics (issue #3)', () => {
+  it('glob→regex conversion matches what the glob means', async () => {
+    const { globToRegex } = await import('../src/config.js');
+    const re = (g: string) => new RegExp(globToRegex(g));
+    // **/node_modules/** — any depth, as a path segment
+    expect(re('**/node_modules/**').test('node_modules/x.js')).toBe(true);
+    expect(re('**/node_modules/**').test('a/b/node_modules/x.js')).toBe(true);
+    expect(re('**/node_modules/**').test('src/my_node_modules_fake.ts')).toBe(false);
+    // **/*.test.* — file suffix at any depth, not crossing directories
+    expect(re('**/*.test.*').test('src/a.test.ts')).toBe(true);
+    expect(re('**/*.test.*').test('src/a.ts')).toBe(false);
+    // **/.asdlc/** — escaped dot
+    expect(re('**/.asdlc/**').test('.asdlc/reports/x.json')).toBe(true);
+    expect(re('**/.asdlc/**').test('src/xasdlc/x.json')).toBe(false);
+  });
+
+  it('boundaries gate honors the top-level exclude (real dependency-cruiser run)', async () => {
+    const { runBoundariesGate } = await import('../src/gates/boundaries.js');
+    const { defaultConfig } = await import('../src/config.js');
+    const root = mkdtempSync(join(tmpdir(), 'asdlc-excl-'));
+    mkdirSync(join(root, 'src', 'legacy'), { recursive: true });
+    // A circular pair inside src/legacy — violates the starter no-circular rule.
+    writeFileSync(join(root, 'src/legacy/a.js'), "import './b.js';\nexport const a = 1;\n");
+    writeFileSync(join(root, 'src/legacy/b.js'), "import './a.js';\nexport const b = 1;\n");
+    writeFileSync(join(root, 'src/ok.js'), 'export const ok = 1;\n');
+    writeFileSync(join(root, '.dependency-cruiser.cjs'),
+      "module.exports = { forbidden: [{ name: 'no-circular', severity: 'error', from: {}, to: { circular: true } }], options: {} };\n");
+    const config = { ...defaultConfig(), source_dirs: ['src'] };
+
+    const withoutExclude = await runBoundariesGate(root, { ...config, exclude: [] });
+    const withExclude = await runBoundariesGate(root, { ...config, exclude: ['**/legacy/**'] });
+    expect(Array.isArray(withoutExclude) && (withoutExclude as unknown[]).length > 0).toBe(true);
+    expect(withExclude).toEqual([]);
+  });
+});
+
 describe('install lifecycle', () => {
   it('missing state is null; a partial state file degrades to PARTIAL, never ACTIVE', () => {
     const root = tempRepo();

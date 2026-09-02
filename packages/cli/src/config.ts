@@ -35,6 +35,23 @@ export function defaultConfig(): Config {
   };
 }
 
+// One meaning for `exclude` across every gate (issue #3): gates that speak
+// glob get the globs verbatim; dependency-cruiser speaks regex, so convert.
+export function globToRegex(glob: string): string {
+  let g = glob;
+  const leading = g.startsWith('**/');
+  if (leading) g = g.slice(3);
+  const trailing = g.endsWith('/**');
+  if (trailing) g = g.slice(0, -3);
+  let r = g
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    .replace(/\*\*/g, '.*')
+    .replace(/\*/g, '[^/]*');
+  r = leading ? `(^|/)${r}` : `^${r}`;
+  r = trailing ? `${r}(/|$)` : `${r}$`;
+  return r;
+}
+
 export function loadConfig(root: string): Config {
   const p = join(root, ASDLC_DIR, 'config.yml');
   const base = defaultConfig();

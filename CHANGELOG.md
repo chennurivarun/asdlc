@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.0 — 2026-09-02
+
+Fixes [#3](https://github.com/chennurivarun/asdlc/issues/3) — reported by
+**@Sampath2439** (two for two).
+
+- **`exclude` now means one thing everywhere.** The top-level `exclude` in
+  `.asdlc/config.yml` looked global but was honored only by the duplication
+  gate. It now applies to all scanners: jscpd (as before), Semgrep
+  (`--exclude` per pattern), and dependency-cruiser (globs converted to path
+  regexes; rule-file excludes still apply on top — this adds exclusions,
+  never removes them). We note the irony of the concept-drift tool carrying
+  one name with three meanings in its own config.
+- New `globToRegex` helper with unit tests, plus a live dependency-cruiser
+  regression test proving excluded paths produce zero boundary findings.
+- **Behavior change:** repos relying on boundaries/patterns findings inside
+  excluded paths will see those findings disappear (that's the fix). Minor
+  version bump accordingly.
+
 ## 0.2.1 — 2026-09-02
 
 Fixes [#1](https://github.com/chennurivarun/asdlc/issues/1) — thanks to
