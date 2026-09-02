@@ -4,19 +4,45 @@
   "description": "ASDLC — the anti-drift governance layer for AI-built codebases. Implements the Anti-Drift Playbook v3.1.1 protocol: plan, init, check, audit.",
   "license": "Apache-2.0",
   "type": "module",
-  "repository": { "type": "git", "url": "git+https://github.com/chennurivarun/asdlc.git", "directory": "packages/cli" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chennurivarun/asdlc.git",
+    "directory": "packages/cli"
+  },
   "homepage": "https://github.com/chennurivarun/asdlc#readme",
-  "bugs": { "url": "https://github.com/chennurivarun/asdlc/issues" },
-  "keywords": ["ai", "coding-agents", "code-quality", "governance", "drift", "duplication", "architecture", "ci", "claude-code", "cursor", "sdlc"],
-  "bin": { "asdlc": "./bin/asdlc.js" },
-  "files": ["dist", "bin", "assets"],
+  "bugs": {
+    "url": "https://github.com/chennurivarun/asdlc/issues"
+  },
+  "keywords": [
+    "ai",
+    "coding-agents",
+    "code-quality",
+    "governance",
+    "drift",
+    "duplication",
+    "architecture",
+    "ci",
+    "claude-code",
+    "cursor",
+    "sdlc"
+  ],
+  "bin": {
+    "asdlc": "bin/asdlc.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "assets"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
     "prepublishOnly": "npm run build && npm test"
   },
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "commander": "^12.1.0",
     "dependency-cruiser": "^16.10.0",
